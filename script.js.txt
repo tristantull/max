@@ -1,0 +1,68 @@
+// Emote rain effect
+const emotes = ['😭', '🤡', '💀', '🗑️', '👑', '🏆', '⚡', '🔥', '💎', '⭐'];
+const emoteRain = document.getElementById('emoteRain');
+
+function createEmote() {
+    const emote = document.createElement('div');
+    emote.className = 'emote';
+    emote.textContent = emotes[Math.floor(Math.random() * emotes.length)];
+    emote.style.left = Math.random() * 100 + 'vw';
+    emote.style.animationDuration = (Math.random() * 3 + 5) + 's';
+    emote.style.animationDelay = Math.random() * 2 + 's';
+    
+    emoteRain.appendChild(emote);
+    
+    setTimeout(() => {
+        emote.remove();
+    }, 8000);
+}
+
+// Create emotes periodically
+setInterval(createEmote, 1000);
+
+// Add some initial emotes
+for (let i = 0; i < 5; i++) {
+    setTimeout(createEmote, i * 200);
+}
+
+// Add click effects
+document.addEventListener('click', function(e) {
+    const colors = ['#ff4757', '#ffd700', '#2ed573', '#5352ed'];
+    const particles = 8;
+    
+    for (let i = 0; i < particles; i++) {
+        const particle = document.createElement('div');
+        particle.style.position = 'fixed';
+        particle.style.left = e.clientX + 'px';
+        particle.style.top = e.clientY + 'px';
+        particle.style.width = '4px';
+        particle.style.height = '4px';
+        particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.borderRadius = '50%';
+        particle.style.pointerEvents = 'none';
+        particle.style.zIndex = '9999';
+        
+        const angle = (i / particles) * Math.PI * 2;
+        const velocity = 100;
+        const vx = Math.cos(angle) * velocity;
+        const vy = Math.sin(angle) * velocity;
+        
+        document.body.appendChild(particle);
+        
+        let x = 0, y = 0;
+        const animate = () => {
+            x += vx * 0.02;
+            y += vy * 0.02 + 2;
+            particle.style.transform = `translate(${x}px, ${y}px)`;
+            particle.style.opacity = Math.max(0, 1 - y * 0.01);
+            
+            if (particle.style.opacity > 0) {
+                requestAnimationFrame(animate);
+            } else {
+                particle.remove();
+            }
+        };
+        
+        requestAnimationFrame(animate);
+    }
+});
